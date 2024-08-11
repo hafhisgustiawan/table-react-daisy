@@ -1,10 +1,25 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import data from "./../status_antrean.json";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { getDataAntean } from "./services/query";
+import BasicLoading from "./components/BasicLoading";
+import { useEffect } from "react";
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
+
+  const { data, error, isPending } = useQuery({
+    queryKey: ["antrean"],
+    queryFn: ({ signal }) => getDataAntean({ signal }),
+  });
+
+  useEffect(() => {
+    if (error) console.error(error);
+  }, [error]);
+
+  if (isPending) return <BasicLoading />;
+
   return (
     <div className="flex flex-col space-y-4 p-6">
       <div className="w-full flex flex-col space-y-3 md:space-y-0 md:flex-row md:justify-end md:space-x-3">
